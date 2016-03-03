@@ -1,0 +1,32 @@
+package com.project.sysumobilelibrary.global;
+
+
+public class MyURL {
+
+	//一定要加 http:// 否则空指针
+	public static final String BASE_URL = "http://192.168.191.1:1335";
+//	public static final String BASE_URL = "http://121.42.167.154:1335";
+	
+	public static final String CGI_URL = "http://202.116.64.108:8991/cgi-bin/sug.cgi?q=";
+	
+	public static final String LOGIN_URL = BASE_URL + "/login/";
+	 
+	public static final String GET_USER_INFO_URL = BASE_URL + "/get_user_info/";
+
+	public static final String GET_MY_BOR_LOAN_URL = BASE_URL + "/get_my_bor_loan/";
+	public static final String GET_MY_BOR_HISTORY_LOAN_URL = BASE_URL + "/get_my_bor_history_loan/";
+	public static final String GET_MY_BOR_HOLD_URL = BASE_URL + "/get_my_bor_hold/";
+	
+	public static final String GET_BOOK_ORDER_INFO = BASE_URL + "/get_book_order_info/";
+	public static final String GET_BOOK_INFO = BASE_URL + "/get_book_info/";
+	
+	public static final String SEARCH_URL = BASE_URL + "/search/";
+	public static final String SEARCH_JUMP_URL = BASE_URL + "/search_jump/";
+	
+	public static final String BOR_HOLD_DELETE = BASE_URL + "/bor_hold_delete/";
+	public static final String BOR_RENEW_PART_URL = BASE_URL + "/bor_renew_part/";
+	public static final String BOR_RENEW_ALL_URL = BASE_URL + "/bor_renew_all/";
+	public static final String ORDER_BOOK_URL = BASE_URL + "/order_book/";
+	public static String SUBMIT_BUG = BASE_URL + "/submit_bug/";
+	
+}

@@ -1,0 +1,120 @@
+'http://202.116.64.108:8991/F/'+ token + '-26316?func=find-b&find_code=WTI&request=android&local_base=ZSU01&filter_code_1=WLN&filter_request_1=&filter_code_2=WYR&filter_request_2=&filter_code_3=WYR&filter_request_3=&filter_code_4=WFM&filter_request_4=&filter_code_5=WSL&filter_request_5='
+
+
+keytype
+输入类型：
+func=find-b&find_code=WTI
+WRD	所有字段
+ETI	正题名(精确匹配）
+WTI	题名关键词
+WAU	著者
+WSU	主题词
+WPU	出版社
+ISS	ISSN
+ISB	ISBN
+CAL	索书号
+SYS	系统号 
+BAR	条形码
+TAG	用户标签
+
+{u'所有字段':'WRD',
+u'正题名(精确匹配)':'ETI',
+u'题名关键词':'WTI',
+u'著者':'WAU',
+u'主题词':'WSU',
+u'出版社':'WPU',
+u'ISSN':'ISS',
+u'ISBN':'ISB',
+u'索书号':'CAL',
+u'系统号':'SYS',
+u'条形码':'BAR',
+u'户标签':'TAG'}
+
+keyword
+输入：空格用+代替
+request=android
+request=android+python
+request=android+安卓
+
+/*
+local_base
+文献库：
+local_base=ZSU01
+ZSU01	中文文献库
+ZSU09	西文文献库 
+*/
+
+{u'中文文献库':'ZSU01',
+u'西文文献库':'ZSU09'}
+
+用and or运算来扩展
+op=AND  op=OR
+
+//不用了，用and运算取代
+set_number request_op
+二次检索：需要为每一次检索保存set_number
+set_number=073339&request_op=AND
+
+start_year
+开始年份: 
+filter_code_2=WYR&filter_request_2=2000
+
+end_year
+结束年份: 
+filter_code_3=WYR&filter_request_3=2015
+
+sub_library
+分馆：
+filter_code_5=WSL&filter_request_5=ZSU50
+ZSU50	中山大学图书馆
+NXZLT	南校区中文流通 
+NXWLT	南校区外文流通
+NXBK	南校区报刊
+NXTC	特藏部 
+NXCK	南校区参考咨询
+BXLT	北校区流通
+BXYL	北校区图书阅览
+BXBK	北校区报刊阅览
+DXLT	东校区流通
+DXYL	东校区阅览
+DXZC	东校区专藏室
+DXFX	东校区法学馆
+DXDK	东校区地库
+DXXZ	行政管理中心
+ZXLT	珠海校区流通
+ZHYL	珠海校区阅览
+LNYL	经管分馆阅览
+LNLT	经管分馆流通
+
+{u'中山大学图书馆':'ZSU50',
+u'南校区中文流通 ':'NXZLT',
+u'南校区外文流通':'NXWLT',
+u'南校区报刊':'NXBK',
+u'特藏部 ':'NXTC',
+u'南校区参考咨询':'NXCK',
+u'北校区流通':'BXLT',
+u'北校区图书阅览':'BXYL',
+u'北校区报刊阅览':'BXBK',
+u'东校区流通':'DXLT',
+u'东校区阅览':'DXYL',
+u'东校区专藏室':'DXZC',
+u'东校区法学馆':'DXFX',
+u'东校区地库':'DXDK',
+u'行政管理中心':'DXXZ',
+u'珠海校区流通':'ZXLT',
+u'珠海校区阅览':'ZHYL',
+u'经管分馆阅览':'LNYL',
+u'经管分馆流通':'LNLT'}
+
+&ADJACENT=N 非词临近附近
+
+and or 空格 运算
+
+检索提示:	
+Hint 如果选择“词邻近”， 那么，当您输入词组 computer programming 系统将理解为您只检索 computer后紧接着 programming的记录。 
+
+Hint 系统不区分西文检索词的大、小写。例如，输入 computer 将匹配出 computer, Computer 和COMPUTER. 
+
+Hint 您可以在检索式里使用AND和OR进行布尔逻辑运算。例如， 输入检索式(heart OR cardiac) AND surgery 将检索到包含heart 或者 cardiac并且含有 surgery 的所有记录。 
+
+Hint 可以使用字符 ? 做为检索词的一部分进行匹配 。 例如，gun? 将检索到 gun, guns, gunners, gunnery, gunning, 等。 再例如， ? ology 将检索到 anthropology, archaeology, psychology 等。 ? 号字符还用于检索不同的拼写方式。例如，alumi?m 将找到美国拼写方式的aluminum, 和英国拼写方式的aluminium 。

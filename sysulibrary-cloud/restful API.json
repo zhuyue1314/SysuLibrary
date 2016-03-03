@@ -1,0 +1,397 @@
+新生激活借书权限网址：http://202.116.65.85
+没有新生实验对象，暂无法判断
+
+
+cgi:
+http://202.116.64.108:8991/cgi-bin/sug.cgi?q=hello
+aleph_sug(
+	{
+		hello: 21,
+		hello android: 3,
+		hello 美国: 3,
+		hello dubai: 1,
+		hello 中产: 1
+	}
+)
+aleph_sug({})
+
+1. 登陆
+/login/ POST 
+username=str & password=str 自加密
+response:
+{
+	addr_end: "20170630",	地址有效期止
+	addr_start: "20130819",	地址有效期起
+	address: "移动信息工程学院",	地址
+	borrow_history: "27",	借阅历史列表
+	borrow_num: "2",	外借
+	cash: "0.00",	现金事务 不为0.00表示需要做题目，做题网址：http://202.116.65.85/sysulib/
+	code: 1,	
+	debt: "0.00",	当前过期外借欠款 不为0.00表示有书过期未还
+	email: "856985458@qq.com",	E-mail
+	msg: "查询个人信息成功",
+	name: "姓名",	姓名
+	number: "1325456",	条码号
+	order_num: "1",	预约请求
+	phone1: "13750568655",	联系电话(1)
+	phone2: "586956",	联系电话(2)
+	phone3: "",	联系电话(3)
+	phone4: "",	联系电话(4)
+	postalcode: "529800",	邮政编码
+	state: "11",	状态
+	token: "VNB191C76KXJ4UYBDAJGUNUJN2M4688Y2KE2A1UPHH9B7ST3YY",	
+	type: "BK",	类型
+	valid_date: "20170630"	注册有效期
+}
+
+2. 查询个人信息
+/get_user_info/ GET POST 
+token=str
+request: 参考登陆成功返回的信息
+
+3. 查询图书信息
+/get_book_all_info/ GET POST
+token=str & doc_number=str
+response:
+{
+	author: "库罗斯, J. F.",	个人著者 
+	code: 1,
+	doc_number: "000540122",	系统号- 图书  
+	img_url: "http://202.112.150.126/index.php?client=libcode&isbn=7-111-16505-5/cover",	封面照片链接
+	isbn: "7-111-16505-5 : CNY55.00",	ISBN  
+	language: "chi",	作品语种  
+	msg: "查询图书信息成功",
+	name: "计算机网络 : 自顶向下方法与Internet特色 = Computer networking : a top-down approach featuring the Internet / (美) James F.Kurose, Keith W.Ross著 ; 陈鸣等译",	题名  
+	publisher: "北京 : 机械工业出版社, 2005",	出版发行
+	structure: "xix, 563页 : 图 ; 26cm",	载体形态
+	subject: "计算机网络",	主题 
+	summary: "",	摘要
+	order_info: [	预约信息
+		{
+			PICKUP: [	预约可选取书地点
+			"南校区1楼总服务台",
+			"北校区流通",
+			"东校区流通",
+			"珠海校区流通"
+			],
+			bar_code: "A1580926",	条码号
+			book_num: "TP393/417.2",	索书号
+			can_order: true,	是否可以被预约
+			description: "",	描述
+			due_date: "递送中/在分馆",	应还日期
+			due_time: "23:59",	应还时间
+			order_num: "",	请求数量
+			place: "南校区中文理科书库（夹层4楼）",	收藏地
+			state: "外借本",	单册状态
+			sub_library: "南校区中文流通"	分馆
+		},
+		{
+			PICKUP: [
+			"北校区流通",
+			"东校区流通",
+			"珠海校区流通"
+			],
+			bar_code: "A1580928",
+			book_num: "TP393/417.2",
+			can_order: true,
+			description: "",
+			due_date: "在架上",
+			due_time: "",
+			order_num: "",
+			place: "南校区中文理科书库（夹层4楼）",
+			state: "外借本",
+			sub_library: "南校区中文流通"
+		},
+		{
+			PICKUP: [
+			"南校区1楼总服务台",
+			"北校区流通",
+			"珠海校区流通"
+			],
+			bar_code: "A1580929",
+			book_num: "TP393/417.2",
+			can_order: true,
+			description: "",
+			due_date: "在架上",
+			due_time: "",
+			order_num: "",
+			place: "东校区普通图书（3楼）",
+			state: "外借本",
+			sub_library: "东校区流通"
+		}
+	]
+}
+/get_book_info/ 是没有预约信息的
+
+4. 查询图书预约信息
+/get_book_order_info/ GET POST
+token=str & doc_number=str
+response: 参考第3条的预约信息
+
+5. 查询个人外借
+/get_my_bor_loan/ GET POST
+token=str
+response:
+{
+	code: 1,
+	msg: "查询个人外借信息成功",
+	loans: [
+		{
+			author: "陈文",	著者
+			doc_number: "001035816",	系统号- 图书 
+			due_date: "20160116",	应还日期
+			name: "深入理解Android网络编程 :技术详解与最佳实践 :core technology and best practice",	题名
+			no: "1",	No.
+			select_no: "c200903175000020",	选择号，当需要续借时需要提供这个
+			sub_library: "东校区流通",	分馆
+			year: "2013"	出版年
+		},
+		{
+			author: "福罗赞",
+			doc_number: "001036268",
+			due_date: "有效应还日期: 20151227 。",
+			name: "计算机网络教程 :自顶向下方法 :a top-down approach",
+			no: "2",
+			select_no: "c200903627000010",
+			sub_library: "南校区中文流通",
+			year: "2013"
+		}
+	]
+}
+
+6. 查询个人借阅历史列表
+/get_my_bor_history_loan/ GET POST
+token=str
+{
+	code: 1,
+	msg: "查询个人历史借阅成功"
+	loans: [
+		{
+			author: "孔祥盛",	著者
+			doc_number: "001189158",	系统号- 图书 
+			due_date: "20151227",	应还日期
+			due_time: "23:59",	应还时间
+			name: "MySQL数据库基础与实例教程",	题名
+			no: "1",	No.
+			ret_date: "20151214",	归还日期
+			ret_time: "10:50",	归还时间
+			sub_library: "东校区流通",	分馆
+			year: "2014"	年
+		}
+	]
+}
+
+7. 查询个人预约信息
+/get_my_bor_hold/ GET POST
+token=str
+{
+	code: 1,
+	msg: "查询个人预约信息成功",
+	loans: [
+		{
+			book_num: "TP393.09/271",	索书号
+			book_state: "外借本",	单册状态
+			can_delete: false,	是否可被删除
+			get_place: "珠海校区流通",	取书地点
+			meet_date: "20151214",	满足日期
+			name: "RESTful Web Services中文版",	题名
+			no: "1",	序号
+			order_state: "保留到: 20151221",	请求状态
+			order_valid: "20151203-20160102",	预约有效期
+			sub_library: "东校区流通"，	书所在分馆
+			
+			
+			
+			doc_number: "000739458", 后面这四个参数暂时是多余的
+			item_sequence: "000020",
+			sequence: "0001",
+			adm_library: "ZSU50",
+		}
+	]
+}
+
+8. 部分续借
+/bor_renew_part/ GET POST
+token=str & select_nos=str  & cnt=str    //select_nos为需要续借的书的select_no，参考上面个人外借信息，若有多个，中间用 | 隔开 最后为position
+{
+	code: 1,
+	msg: "续借不成功"，
+	loans: [
+		{
+			due_date: "20160116",	应还日期
+			due_time: "23:59",	应还时间
+			fail_reason: "已达到续借限制. - 已续借次数: 02 限制次数: 01.",	未能续借的原因
+			name: "深入理解Android网络编程 :技术详解与最佳实践 :core technology and best practice",	描述
+			no: "1",	序号
+			number: "A6801292",	条码
+			state: "已借出",	单册状态
+			sub_library: "东校区流通"	分馆
+		},
+		{
+			due_date: "有效应还日期: 20151227 。",
+			due_time: "23:59",
+			fail_reason: "单册有预约请求.",
+			name: "计算机网络教程 :自顶向下方法 :a top-down approach",
+			no: "2",
+			number: "A6805162",
+			state: "已借出",
+			sub_library: "南校区中文流通"
+		}
+	]
+}
+
+
+9. 全部续借
+/bor_renew_all/ GET POST
+token=str
+{
+	code: 1,
+	msg: "续借不成功"，
+	loans: [
+		{
+			due_date: "20160116",	应还日期
+			due_time: "23:59",	应还时间
+			fail_reason: "已达到续借限制. - 已续借次数: 02 限制次数: 01.",	未能续借的原因
+			name: "深入理解Android网络编程 :技术详解与最佳实践 :core technology and best practice",	描述
+			no: "1",	序号
+			number: "A6801292",	条码
+			state: "已借出",	单册状态
+			sub_library: "东校区流通"	分馆
+		},
+		{
+			due_date: "有效应还日期: 20151227 。",
+			due_time: "23:59",
+			fail_reason: "单册有预约请求.",
+			name: "计算机网络教程 :自顶向下方法 :a top-down approach",
+			no: "2",
+			number: "A6805162",
+			state: "已借出",
+			sub_library: "南校区中文流通"
+		}
+	]
+}
+
+10. 预约
+/order_book/ GET POST
+token=str & doc_number=str & sub_library=str & PICKUP=str 分别为token，系统号，书所在分馆，预约取书地点
+{
+	code: -1,
+	msg: "预约失败，该书可能就在你所希望取书的图书馆处"
+}
+{
+	code: -1,
+	msg: "预约失败，读者有一个相似复本"
+}
+{
+	code: 1,
+	msg: "很高兴的告诉你，预约成功了，请耐心等待图书的到来。"
+}
+
+
+11. 取消预约
+/bor_hold_delete/ GET POST
+token=str & book_num=str 后面这个是索书号
+{
+	code: 1,
+	msg: "成功删除预约"
+}
+{
+	code: -1,
+	msg: "无法删除该预约，该预约可能已经到达"
+}
+
+12. 搜索
+/search/ GET POST
+token=str & keytype=str & keyword=str & num=str & op=str & start_year=str & end_year=str & sub_library=str 中文优先，默认返回20条,num为需要取的条数
+{
+	books: [
+		{
+			author: "安尼兹",
+			book_num: "TN929.53/323",
+			doc_number: "001221004",
+			index: 1,
+			name: "Android应用程序开发权威指南",
+			publisher: "电子工业出版社",
+			year: "2015"
+		}
+	],
+	code: 1,
+	msg: "检索成功",
+	total: 258
+}
+下面版本已弃
+{
+	code: 1,
+	msg: "检索成功",
+	total: 258,
+	books: [
+		{
+			author: "安尼兹",
+			doc_number: "001221004",
+			img_url: "http://202.112.150.126/index.php?client=libcode&isbn=978-7-121-25199-3/cover",
+			index: 1,
+			isbn: "978-7-121-25199-3 : CNY118.00",
+			language: "chi",
+			name: "Android应用程序开发权威指南 = Introduction to",
+			publisher: "北京 : 电子工业出版社",
+			structure: "xxx, 611页 : 图 ; 23cm",
+			subject: "移动终端 - 应用程序 - 程序设计",
+			summary: "本书是Android应用程序开发领域的权威之作。它由Android系统的资深专家执笔，深入浅出地讲解了Android应用程序开发平台的搭建、Android应用程序开发过程中的点点滴滴，以及应用程序发布的技术要点。书中配有大量的注释和图片来引导读者学习。",
+			year: " 2015"
+		},
+		{
+			author: "安晓辉, 1980-",
+			doc_number: "001200448",
+			img_url: "http://202.112.150.126/index.php?client=libcode&isbn=978-7-121-24457-5/cover",
+			index: 2,
+			isbn: "978-7-121-24457-5 : CNY65.00",
+			language: "chi",
+			name: "Qt on Android核心编程 / 安晓辉著",
+			publisher: "北京 : 电子工业出版社",
+			structure: "XV, 426页 : 图 ; 27cm",
+			subject: "移动终端 - 应用程序 - 程序设计",
+			summary: "本书首先是一本介绍Qt程序设计技术的书籍，其次是讲述如何在移动平台Android上使用Qt框架进行开发的书籍。对于Qt技术感兴趣的读者，无论是你专注传统的桌面软件开发，还是希望尝试使用Qt在Android平台开发，都可以从本书中获得最根本最重要的知识与实例。",
+			year: " 2015"
+		}
+	]
+}
+
+13. 跳页
+/search_jump/ GET POST
+token=str & jump=str & num=str 后面是起始号和加载数
+新版返回参考search
+{
+	code: 1,
+	msg: "跳页成功",
+	total: 258，
+	books: [
+		{
+			author: "郑萌",
+			doc_number: "000997735",
+			img_url: "http://202.112.150.126/index.php?client=libcode&isbn=978-7-121-18495-6/cover",
+			index: 200,
+			isbn: "978-7-121-18495-6 : CNY59.80",
+			language: "chi",
+			name: "Android应用程序开发与典型案例 / 郑萌, 赵常松等编著",
+			publisher: "北京 : 电子工业出版社",
+			structure: "xiv, 459页 : 图 ; 26cm",
+			subject: "移动电话机 - 应用程序 - 程序设计 - 高等学校 - 教材",
+			summary: "本书共23章，内容包含两大部分。第一部分是Android程序设计基础，在介绍Android环境搭建以及Android系统基本控件和组件后，详细介绍了Android系统应用编程中典型的技术；第二部分是Android程序UI设计，从手机软件的交互设计谈起，介绍了Android用户界面设计原则和方法、Android用户界面设计哲学等，并给出了具体建议。",
+			year: " 2012"
+		}
+	]
+}
+{
+	code: 2,
+	msg: "超出了集合的记录数"
+}
+
+14. 退出
+/logout/ GET POST
+token=str
+
+15. 推荐
+
+
+
+

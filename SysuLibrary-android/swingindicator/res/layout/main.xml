@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:my="http://schemas.android.com/apk/res/com.kanyuan.swingindicator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <com.kanyuan.swingindicator.SwingIndicator
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        my:circleRadius="10dp"
+        my:cycle="400"
+        my:swingRadius="50dp" />
+
+</LinearLayout>

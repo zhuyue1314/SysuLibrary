@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Keyczar Demo</string>
+    <string name="input_prompt">Plaintext:</string>
+    <string name="output_prompt">Encrypted text:</string>
+    <string name="encrypt_button">Encrypt</string>
+    <string name="decrypt_button">Decrypt</string>
+    <string name="problem">Problem initializing</string>
+</resources>

@@ -1,0 +1,14 @@
+int attr circleColor 0x7f010002
+int attr circleRadius 0x7f010000
+int attr cycle 0x7f010003
+int attr swingRadius 0x7f010001
+int drawable ic_launcher 0x7f020000
+int layout main 0x7f030000
+int string app_name 0x7f040000
+int style AppBaseTheme 0x7f050000
+int style AppTheme 0x7f050001
+int[] styleable swingindicator { 0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003 }
+int styleable swingindicator_circleColor 2
+int styleable swingindicator_circleRadius 0
+int styleable swingindicator_cycle 3
+int styleable swingindicator_swingRadius 1

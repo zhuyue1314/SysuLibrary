@@ -1,0 +1,354 @@
+package com.project.sysumobilelibrary;
+
+import java.util.HashMap;
+
+import me.drakeet.materialdialog.MaterialDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.keyczar.Crypter;
+import org.keyczar.exceptions.KeyczarException;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.appspheregroup.android.swichview.SwitchView;
+import com.appspheregroup.android.swichview.SwitchView.OnSwitchChangeListener;
+import com.example.android.keyczardemo.AndroidKeyczarReader;
+import com.project.sysumobilelibrary.global.MyApplication;
+import com.project.sysumobilelibrary.global.MyURL;
+
+public class LoginActivity extends Activity implements OnClickListener,
+		OnSwitchChangeListener {
+	private static final String TAG = "LoginActivity";
+
+	private static final String spAccountName = "account";
+
+	private EditText etUsername;
+	private EditText etPassword;
+	private Button btUsernameClear;
+	private Button btPasswordClear;
+	private Button btPasswordEye;
+	private Button btLogin;
+	private Button btActivate;
+
+	private TextWatcher usernameWatcher;
+	private TextWatcher passwordWatcher;
+
+	private SwitchView switchView;
+	private MaterialDialog mMaterialDialog;
+
+	private final static int CODE_TOAST_MSG = 0;
+
+	Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case CODE_TOAST_MSG:
+				Toast.makeText(LoginActivity.this, msg.obj.toString(),
+						Toast.LENGTH_SHORT).show();
+				break;
+			}
+		};
+	};
+
+	public void myToast(String msg) {
+		handler.obtainMessage(CODE_TOAST_MSG, msg).sendToTarget();
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_login);
+
+		initView();
+		initAccount();
+	}
+
+	private void initAccount() {
+		SharedPreferences share = getSharedPreferences(spAccountName,
+				Context.MODE_PRIVATE); // 私有数据
+		boolean canRemember = share.getBoolean("canRemember", false);
+		if (canRemember) {
+			etUsername.setText(share.getString("username", ""));
+			String pwd = share.getString("password", "");
+			if (!pwd.trim().isEmpty() && pwd != null) {
+				pwd = AESDencrypt(pwd);
+			}
+			etPassword.setText(pwd);
+			switchView.setSwitchOn(false);
+		} else {
+			switchView.setSwitchOn(true);
+		}
+	}
+
+	private void remmemberAccount(String username, String password) {
+		SharedPreferences share = getSharedPreferences(spAccountName,
+				Context.MODE_PRIVATE);
+		boolean canRemember = share.getBoolean("canRemember", false);
+		Log.e(TAG, canRemember+"");
+		if (canRemember) {
+			Editor editor = share.edit();
+			editor.putString("username", username);
+			editor.putString("password", password);
+			editor.commit();
+		}
+	}
+
+	private void initView() {
+		mMaterialDialog = new MaterialDialog(this);
+		View view1 = LayoutInflater.from(this).inflate(
+				R.layout.progressbar_item, null);
+		mMaterialDialog.setView(view1);
+		etUsername = (EditText) findViewById(R.id.et_username);
+		etPassword = (EditText) findViewById(R.id.et_password);
+		btUsernameClear = (Button) findViewById(R.id.bt_username_clear);
+		btPasswordClear = (Button) findViewById(R.id.bt_pwd_clear);
+		btPasswordEye = (Button) findViewById(R.id.bt_pwd_eye);
+		btLogin = (Button) findViewById(R.id.bt_login);
+		btActivate = (Button) findViewById(R.id.bt_activate);
+		btUsernameClear.setOnClickListener(this);
+		btPasswordClear.setOnClickListener(this);
+		btPasswordEye.setOnClickListener(this);
+		btLogin.setOnClickListener(this);
+		btActivate.setOnClickListener(this);
+		initWatcher();
+		etUsername.addTextChangedListener(usernameWatcher);
+		etPassword.addTextChangedListener(passwordWatcher);
+
+		switchView = (SwitchView) findViewById(R.id.switchView1);
+		switchView.setSwitchOn(false);
+		switchView.setOnSwitchChangeListener(this);
+
+		etPassword.setOnKeyListener(new OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_ENTER) {
+					/* 隐藏软键盘 */
+					InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					if (inputMethodManager.isActive()) {
+						inputMethodManager.hideSoftInputFromWindow(
+								v.getApplicationWindowToken(), 0);
+					}
+					btLogin.performClick();
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+
+	private void initWatcher() {
+		usernameWatcher = new TextWatcher() {
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			public void afterTextChanged(Editable s) {
+				etPassword.setText("");
+				if (s.toString().length() > 0) {
+					btUsernameClear.setVisibility(View.VISIBLE);
+				} else {
+					btUsernameClear.setVisibility(View.INVISIBLE);
+				}
+			}
+		};
+
+		passwordWatcher = new TextWatcher() {
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			public void afterTextChanged(Editable s) {
+				if (s.toString().length() > 0) {
+					btPasswordClear.setVisibility(View.VISIBLE);
+				} else {
+					btPasswordClear.setVisibility(View.INVISIBLE);
+				}
+			}
+		};
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch (view.getId()) {
+		case R.id.bt_username_clear:
+			etUsername.setText("");
+			etPassword.setText("");
+			break;
+		case R.id.bt_pwd_clear:
+			etPassword.setText("");
+			break;
+		case R.id.bt_pwd_eye:
+			if (etPassword.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
+				btPasswordEye.setBackgroundResource(R.drawable.button_eye_s);
+				etPassword.setInputType(InputType.TYPE_CLASS_TEXT
+						| InputType.TYPE_TEXT_VARIATION_NORMAL);
+			} else {
+				btPasswordEye.setBackgroundResource(R.drawable.button_eye_n);
+				etPassword.setInputType(InputType.TYPE_CLASS_TEXT
+						| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+			}
+			etPassword.setSelection(etPassword.getText().toString().length());
+			break;
+		case R.id.bt_login:
+			login();
+			break;
+		case R.id.bt_activate:
+			activate();
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	private void activate() {
+		String url = "http://202.116.65.85";
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setData(Uri.parse(url));
+		startActivity(intent);
+	}
+
+	private void login() {
+		// SnackBar mSnackBar = new SnackBar.Builder(this).withMessage("提示信息")
+		// .withDuration(SnackBar.SHORT_SNACK).show();
+
+		final String username = etUsername.getText().toString().trim();
+		String pwd = etPassword.getText().toString().trim();
+		if (username.isEmpty()) {
+			myToast("使用校园卡的读者：读者证号为学号或工资号；使用条码证的读者：读者证号为条码号。");
+			return;
+		}
+		if (pwd.isEmpty()) {
+			myToast("港澳台或国外身份证/护照号码含括号的，初始密码为含括号的后6位；没登记身份证号码的用户，初始密码为1111.");
+			return;
+		}
+		final String password = AESEncrypt(pwd);
+
+		Log.e(TAG, password);
+
+		mMaterialDialog.show();
+		Listener<String> listener = new Listener<String>() {
+
+			@Override
+			public void onResponse(String response) {
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					Log.e(TAG, jsonObject.getString("msg"));
+					int code = jsonObject.getInt("code");
+					if (code == 1) {
+						MyApplication.getUser().setPassword(password);
+						MyApplication.getUser()
+								.updateFromJSONObject(jsonObject);
+						myToast("登陆成功!一名读霸的诞生是需要坚持的。");
+
+						remmemberAccount(username, password);
+
+						Intent intent = new Intent(LoginActivity.this,
+								MainActivity.class);
+						startActivity(intent);
+						finish();
+
+					} else {
+						myToast("登陆失败，请检查读者证号或密码是否正确。");
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					Log.e(TAG, "login json new error");
+				}
+				mMaterialDialog.dismiss();
+			}
+
+		};
+		ErrorListener errorListener = new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				Log.e(TAG, "login error; " + error.toString());
+				myToast("是不是网络出问题了呢？");
+				mMaterialDialog.dismiss();
+			}
+		};
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("username", username);
+		map.put("password", password);
+		MyApplication.getMyVolley().addPostStringRequest(MyURL.LOGIN_URL,
+				listener, errorListener, map, TAG);
+	}
+
+	// AES加密
+	private String AESEncrypt(String pwd) {
+		Crypter mCrypter;
+		String res = "";
+		try {
+			mCrypter = new Crypter(new AndroidKeyczarReader(getResources(),
+					"keys"));
+			res = mCrypter.encrypt(pwd);
+		} catch (KeyczarException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return res;
+	}
+
+	// AES解密
+	private String AESDencrypt(String pwd) {
+		String res = "";
+		Crypter mCrypter;
+		try {
+			mCrypter = new Crypter(new AndroidKeyczarReader(getResources(),
+					"keys"));
+			res = mCrypter.decrypt(pwd);
+		} catch (KeyczarException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	@Override
+	public void onSwitchChanged(View view, boolean isOn) {
+		SharedPreferences share = getSharedPreferences(spAccountName,
+				Context.MODE_PRIVATE); // 私有数据
+		Editor editor = share.edit();
+		editor.putBoolean("canRemember", !isOn);
+		if (isOn) {
+			editor.putString("username", "");
+			editor.putString("password", "");
+		}
+		editor.commit();
+	}
+
+}

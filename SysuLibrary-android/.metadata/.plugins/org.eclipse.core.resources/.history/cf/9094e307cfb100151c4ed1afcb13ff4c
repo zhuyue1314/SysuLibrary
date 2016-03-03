@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_gray"
+    tools:context=".MainActivity" >
+
+    <RadioGroup
+        android:id="@+id/rg_tab_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_white"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/rb_user"
+            style="@style/tab_menu_item"
+            android:drawableTop="@drawable/tab_drawable_user"
+            android:text="我的" />
+
+        <RadioButton
+            android:id="@+id/rb_search"
+            style="@style/tab_menu_item"
+            android:drawableTop="@drawable/tab_drawable_search"
+            android:text="检索" />
+
+        <RadioButton
+            android:id="@+id/rb_like"
+            style="@style/tab_menu_item"
+            android:drawableTop="@drawable/tab_drawable_like"
+            android:text="收藏" />
+    </RadioGroup>
+
+    <View
+        android:id="@+id/div_tab_bar"
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_above="@id/rg_tab_bar"
+        android:background="@color/div_white" />
+
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/div_tab_bar" >
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="#00000000"
+        android:orientation="horizontal" >
+
+        <!-- 显示提醒信息的button android:layout_weight=1  是3个butto，平分手机界面的宽度 -->
+
+        <Button
+            android:id="@+id/bt_user"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="#00000000" />
+        <!-- 占位置的button，以便适应不同分辨率手机 -->
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:visibility="invisible" />
+        <!-- 占位置的button，以便适应不同分辨率手机 -->
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</RelativeLayout>

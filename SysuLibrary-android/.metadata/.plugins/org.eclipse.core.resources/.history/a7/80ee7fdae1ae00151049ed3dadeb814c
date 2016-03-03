@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal" >
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/niv_pic"
+            android:layout_width="89dp"
+            android:layout_height="128dp"
+            android:contentDescription="pic"
+            android:scaleType="centerCrop"
+            android:src="@drawable/head_cat" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp" >
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="收藏：" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/tv_no"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginRight="5dp"
+                            android:background="@drawable/circle_index"
+                            android:gravity="center"
+                            android:text="1"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tv_like_time"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:ellipsize="marquee"
+                            android:singleLine="true"
+                            android:text="12-08 08:08 2015"
+                            android:textIsSelectable="true" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="书名：" />
+
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:focusable="true"
+                        android:maxLines="2"
+                        android:text="name"
+                        android:textIsSelectable="true" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="作者：" />
+
+                    <TextView
+                        android:id="@+id/tv_author"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="author"
+                        android:textIsSelectable="true" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="出版：" />
+
+                    <TextView
+                        android:id="@+id/tv_publisher"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="publisher"
+                        android:textIsSelectable="true" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="年份：" />
+
+                    <TextView
+                        android:id="@+id/tv_year"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="2015"
+                        android:textIsSelectable="true" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="索书号：" />
+
+                    <TextView
+                        android:id="@+id/tv_book_num"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:singleLine="true"
+                        android:text="TN929.53/323"
+                        android:textIsSelectable="true" />
+                </TableRow>
+            </TableLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/iv_delete"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_delete" />
+
+                <TextView
+                    android:id="@+id/tv_detail"
+                    android:layout_width="80dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/imageview_btn_item_selector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="详细"
+                    android:textColor="#455a64"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/iv_note"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/tv_detail"
+                    android:src="@drawable/ic_note" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

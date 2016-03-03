@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp" >
+
+        <TextView
+            android:id="@+id/tv_index"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/circle_index"
+            android:gravity="center"
+            android:text="1"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_order"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/imageview_btn_item_selector"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="预约"
+            android:textColor="#455a64"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_order"
+            android:layout_toRightOf="@id/tv_index"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="收藏地： "
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:singleLine="true"
+                android:text="南校区中文理科书库（夹层4楼）"
+                android:textIsSelectable="true"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center" >
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="应还时间：" />
+
+            <TextView
+                android:id="@+id/tv_due_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text="在架上 - 23:59"
+                android:textIsSelectable="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="索书号：" />
+
+            <TextView
+                android:id="@+id/tv_book_num"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text="TP393/417.2"
+                android:textIsSelectable="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="条码号：" />
+
+            <TextView
+                android:id="@+id/tv_bar_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text="A1580926"
+                android:textIsSelectable="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="请求数量：" />
+
+            <TextView
+                android:id="@+id/tv_order_num"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text="0"
+                android:textIsSelectable="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="单册状态：" />
+
+            <TextView
+                android:id="@+id/tv_state"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text="外借本"
+                android:textIsSelectable="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="分馆：" />
+
+            <TextView
+                android:id="@+id/tv_sub_library"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text="南校区中文流通"
+                android:textIsSelectable="true" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="描述：" />
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:text=" "
+                android:textIsSelectable="true" />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

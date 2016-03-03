@@ -1,0 +1,198 @@
+package com.project.sysumobilelibrary.adapter;
+
+import java.util.ArrayList;
+
+import me.drakeet.materialdialog.MaterialDialog;
+
+import com.android.volley.toolbox.NetworkImageView;
+import com.project.sysumobilelibrary.BookDetailActivity;
+import com.project.sysumobilelibrary.R;
+import com.project.sysumobilelibrary.entity.LikeBook;
+import com.project.sysumobilelibrary.entity.SearchBook;
+import com.project.sysumobilelibrary.global.MyApplication;
+
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MySearchListViewAdapter extends BaseAdapter {
+	private Context context;
+	private static ArrayList<LikeBook> searchBooks;
+
+	public MySearchListViewAdapter(Context context, ArrayList<LikeBook> searchBooks) {
+		this.context = context;
+		this.searchBooks = searchBooks;
+	} 
+
+	@Override
+	public int getCount() {
+		return searchBooks.size();
+	}
+
+	@Override
+	public Object getItem(int index) {
+		return searchBooks.get(index);
+	}
+
+	@Override
+	public long getItemId(int arg0) {
+		return arg0;
+	}
+
+	@Override
+	public View getView(final int position, View convertView, ViewGroup parent) {
+		ViewHolder viewHolder = null;
+		if (convertView == null) {
+			convertView = LayoutInflater.from(context).inflate(
+					R.layout.search_book_list_item, null);
+			viewHolder = new ViewHolder();
+			initViewHolder(viewHolder, convertView);
+			convertView.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) convertView.getTag();
+		}
+		viewHolder.nivPic.setDefaultImageResId(R.drawable.default_book_pic);
+		viewHolder.nivPic.setErrorImageResId(R.drawable.default_book_pic);
+		viewHolder.nivPic.setImageUrl(searchBooks.get(position).getImg_url(),
+				MyApplication.getMyVolley().getImageLoader());
+
+		viewHolder.tvNo.setText(searchBooks.get(position).getNo()+"");
+		viewHolder.tvName.setText(searchBooks.get(position).getName());
+		viewHolder.tvAuthor.setText(searchBooks.get(position).getAuthor());
+		viewHolder.tvBookNum.setText(searchBooks.get(position).getBook_num());
+		viewHolder.tvPublisher.setText(searchBooks.get(position).getPublisher());
+		viewHolder.tvYear.setText(searchBooks.get(position).getYear());
+		
+		if (MyApplication.getMyDBHelper().isInLike(MyApplication.getUser().getUsername(), searchBooks.get(position).getDoc_number())){
+			viewHolder.ivLike.setImageResource(R.drawable.red_heart);
+		}else{
+			viewHolder.ivLike.setImageResource(R.drawable.black_heart);
+//			viewHolder.ivLike.setTag(R.drawable.black_heart);
+		}
+		
+		
+		viewHolder.ivLike.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				ImageView imageView = (ImageView)view;
+				if ((Integer)view.getTag()==R.drawable.black_heart){
+					imageView.setImageResource(R.drawable.red_heart);
+					imageView.setTag(R.drawable.red_heart);
+					//收藏
+					new Thread(new AddToLike(MyApplication.getUser().getUsername(), searchBooks.get(position))).start();
+					
+				}else{
+					imageView.setImageResource(R.drawable.black_heart);
+					imageView.setTag(R.drawable.black_heart);
+					//删除收藏
+					final MaterialDialog dialog = new MaterialDialog(context);
+					dialog.setMessage("确定删除这个收藏吗？");
+					dialog.setPositiveButton("删除", new OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							new Thread(new DelLike(MyApplication.getUser().getUsername(), searchBooks.get(position).getDoc_number())).start();
+							dialog.dismiss();
+						}
+					}).setNegativeButton("取消", new OnClickListener() {
+						
+						@Override
+						public void onClick(View arg0) {
+							dialog.dismiss();
+						}
+					});
+					dialog.show();
+				}
+				
+			}
+		});
+		viewHolder.tvDetail.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(context, BookDetailActivity.class);
+				intent.putExtra("doc_number", searchBooks.get(position).getDoc_number());
+				context.startActivity(intent);
+				
+			}
+		});
+		return convertView;
+	}
+
+	private void initViewHolder(ViewHolder viewHolder, View convertView) {
+		viewHolder.nivPic = (NetworkImageView) convertView
+				.findViewById(R.id.niv_pic);
+		viewHolder.tvNo = (TextView) convertView.findViewById(R.id.tv_no);
+		viewHolder.tvName = (TextView) convertView.findViewById(R.id.tv_name);
+		viewHolder.tvAuthor = (TextView) convertView
+				.findViewById(R.id.tv_author);
+		viewHolder.tvBookNum = (TextView) convertView
+				.findViewById(R.id.tv_book_num);
+		viewHolder.tvPublisher = (TextView) convertView
+				.findViewById(R.id.tv_publisher);
+		viewHolder.tvYear = (TextView) convertView
+				.findViewById(R.id.tv_year);
+		viewHolder.ivLike = (ImageView)convertView.findViewById(R.id.iv_like);
+		viewHolder.tvDetail = (TextView) convertView
+				.findViewById(R.id.tv_detail);
+		
+	}
+
+	public final class ViewHolder {
+		public NetworkImageView nivPic;
+		public TextView tvNo;
+		public TextView tvName;
+		public TextView tvAuthor;
+		public TextView tvBookNum;
+		public TextView tvPublisher;
+		public TextView tvYear;
+		public ImageView ivLike;
+		public TextView tvDetail;
+
+	}
+	public void myToast(String msg){
+		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+	}
+	class DelLike implements Runnable{
+		private String reader_number;
+		private String doc_number;
+		public DelLike(String reader_number, String doc_number) {
+			this.reader_number = reader_number;
+			this.doc_number = doc_number;
+		}
+		@Override
+		public void run() {
+			int rows = MyApplication.getMyDBHelper().deleteLike(reader_number, doc_number);
+			if (rows == 1){
+				myToast("删除成功");
+			}else if (rows == 0){
+				myToast("删除失败");
+			}else{
+				myToast("BUG!");
+			}
+		}
+	}
+	class AddToLike implements Runnable{
+		private String reader_number;
+		private LikeBook likeBook;
+		public AddToLike(String reader_number, LikeBook likeBook) {
+			this.reader_number = reader_number;
+			this.likeBook = likeBook;
+		}
+		@Override
+		public void run() {
+			long id = MyApplication.getMyDBHelper().insertLike(reader_number, likeBook);
+			if (id > 0){
+				myToast("添加收藏成功");
+			}else{
+				myToast("添加收藏失败");
+			}
+		}
+		
+	}
+}

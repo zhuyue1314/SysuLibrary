@@ -1,0 +1,364 @@
+package com.project.sysumobilelibrary.utils;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Date;
+
+import com.project.sysumobilelibrary.entity.Book;
+import com.project.sysumobilelibrary.entity.LikeBook;
+import com.project.sysumobilelibrary.entity.OrderInfo;
+import com.project.sysumobilelibrary.entity.SearchBook;
+import com.project.sysumobilelibrary.entity.SearchSetting;
+import com.project.sysumobilelibrary.entity.User;
+
+import android.R.integer;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+//shell@android:/data # chmod 777 /data/data/com.project.sysumobilelibrary/databases/Library.db
+
+public class MyDBHelper extends SQLiteOpenHelper {
+	private static final String TAG = "MyDBHelper";
+
+	private static final String DB_NAME = "Library.db";// 数据库名
+	private static final int DB_VERSION = 1;// 数据库版本
+
+	private static final String TB_USERS = "Users";//
+	private static final String TB_BOOKS = "Books";//
+	private static final String TB_ORDERINFOS = "OrderInfos";//
+	private static final String TB_SEARCHBOOKS = "SearchBooks";
+	private static final String TB_LIKES = "Likes";//
+	private static final String TB_SEARCHS = "Searchs";
+
+	private static final String TB_BORROWS = "Borrows";//
+	private static final String TB_ORDERS = "Orders";//
+	private static final String TB_BORHISTORYS = "BorHistorys";//
+
+	public MyDBHelper(Context context) {
+		super(context, DB_NAME, null, DB_VERSION);
+		Log.e(TAG, "sqlite 构造函数");
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		String sql = "";
+		sql = "create table "
+				+ TB_USERS
+				+ "(reader_number text primary key, name text, address text, email text, addr_start text, addr_end text, postalcode text, phone1 text, phone2 text, phone3 text, phone4 text, state text, type text, number text, valid_date text, borrow_num integer, borrow_history integer, order_num integer, cash real, debt real);";
+		db.execSQL(sql);
+		sql = "create table "
+				+ TB_BOOKS
+				+ "(doc_number text, isbn text, language text, name text, publisher text, structure text, summary text, subject text, author text, img_url text, year integer);";
+		db.execSQL(sql);
+		sql = "create table "
+				+ TB_ORDERINFOS
+				+ "(orderinfo_id integer primary key autoincrement, doc_number text, description text, state text, due_date text, due_time text, sub_library text, place text, book_num text, order_num text, bar_code text, can_order integer, foreign key(doc_number) references Books(doc_number) on delete cascade on update cascade);";
+		db.execSQL(sql);
+		sql = "create table "
+				+ TB_SEARCHBOOKS
+				+ "(doc_number text primary key, author text, name text, publisher text, year integer, img_url text, book_num text);";
+		db.execSQL(sql);
+		sql = "create table "
+				+ TB_LIKES
+				+ "(reader_number text, doc_number text, note text, like_time integer, primary key (reader_number, doc_number), foreign key(reader_number) references Users(reader_number) on delete cascade on update cascade, foreign key(doc_number) references searchBooks(doc_number) on delete cascade on update cascade);";
+		db.execSQL(sql);
+		sql = "create table "
+				+ TB_SEARCHS
+				+ "(search_str text, no integer, search_keyword text, doc_number text, primary key(search_str, search_keyword, no), foreign key(doc_number) references searchBooks(doc_number) on delete cascade on update cascade);";
+		db.execSQL(sql);
+
+		Log.e(TAG, "表格创建成功");
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+
+	}
+
+	// 更改
+	public int updateNote(String reader_number, String doc_number, String note){
+		SQLiteDatabase db = getWritableDatabase();
+	    ContentValues cValues = new ContentValues();
+	    cValues.put("note", note);
+	    int rows = db.update("Likes", cValues, "reader_number=? and doc_number=?", new String[]{reader_number, doc_number});
+	    return rows;
+	}
+	// 查询
+	public ArrayList<LikeBook> querySearchs(String search_str, String search_keyword, Integer no, Integer num){
+		SQLiteDatabase db = getReadableDatabase();
+		String sql = "select * from Searchs, SearchBooks where search_str=? and search_keyword=? and no>=? and Searchs.doc_number=SearchBooks.doc_number limit ?;";
+		Cursor cursor = db.rawQuery(
+				sql,
+				new String[] {search_str, search_keyword, no.toString(), num.toString()});
+		ArrayList<LikeBook> books = new ArrayList<LikeBook>();
+		while (cursor.moveToNext()){
+			LikeBook book = new LikeBook();
+			book.getFromCursor(cursor);
+			books.add(book);
+		}
+		cursor.close();
+		db.close();
+		return books;
+	}
+	
+	public boolean isInLike(String reader_number, String doc_number) {
+		SQLiteDatabase db = getReadableDatabase();
+//		db.enableWriteAheadLogging(); 
+		Cursor cursor = db.rawQuery(
+				"select * from Likes where reader_number=? and doc_number=? limit 1;",
+				new String[] { reader_number, doc_number });
+		int cnt = cursor.getCount();
+		cursor.close();
+		db.close();
+		return cnt==1;
+	}
+
+	public Book queryBook(String doc_number){
+		SQLiteDatabase db = getReadableDatabase();
+		Cursor cursor = db.rawQuery(
+				"select * from Books where doc_number=? limit 1;",
+				new String[] {doc_number});
+		Book book = new Book();
+		if (cursor.moveToNext()){
+			book.getFromCursor(cursor);
+		}else{
+			book = null;
+		}
+		db.close();
+		return book;
+	}
+	
+	public ArrayList<LikeBook> queryLikeBooks(String reader_number, Integer next_no, Integer page_num) {
+		if (reader_number == null){
+			return new ArrayList<LikeBook>();
+		}
+		SQLiteDatabase db = getReadableDatabase();
+		Cursor cursor = db.rawQuery(
+				"select doc_number, note, like_time from Likes where reader_number=?  order by like_time desc limit ?, ?;",
+				new String[] { reader_number, next_no.toString(), page_num.toString()});
+		ArrayList<LikeBook> likeBooks = new ArrayList<LikeBook>();
+		while(cursor.moveToNext()){
+			LikeBook likeBook = new LikeBook();
+			likeBook.setNote(cursor.getString(cursor.getColumnIndex("note")));
+			likeBook.setLike_time(cursor.getLong(cursor.getColumnIndex("like_time")));
+			String doc_number = cursor.getString(cursor.getColumnIndex("doc_number"));
+			Cursor cur = db.rawQuery("select * from SearchBooks where doc_number=? limit 1;", new String[]{doc_number});
+			if (cur.moveToNext()){
+				likeBook.getFromCursor(cur);
+			}
+			
+			likeBooks.add(likeBook);
+		}
+		db.close();
+		return likeBooks;
+	}
+
+	// 删除
+	public int deleteUser(String reader_number) {
+		SQLiteDatabase db = getWritableDatabase();
+		String whereClause = "reader_number = ?";
+		String[] whereArgs = { reader_number };
+		int rows = db.delete(TB_USERS, whereClause, whereArgs);
+		db.close();
+		return rows;
+	}
+
+	public int deleteBook(String doc_number) {
+		SQLiteDatabase db = getWritableDatabase();
+		String whereClause = "doc_number = ?";
+		String[] whereArgs = { doc_number };
+		int rows = db.delete(TB_BOOKS, whereClause, whereArgs);
+		db.close();
+		return rows;
+	}
+
+	public int deleteOrderInfos(String doc_number) {
+		SQLiteDatabase db = getWritableDatabase();
+		String whereClause = "doc_number = ?";
+		String[] whereArgs = { doc_number };
+		int rows = db.delete(TB_ORDERINFOS, whereClause, whereArgs);
+		db.close();
+		return rows;
+	}
+
+	private int deleteSearchBook(String doc_number) {
+		SQLiteDatabase db = getWritableDatabase();
+		String whereClause = "doc_number = ?";
+		String[] whereArgs = { doc_number };
+		int rows = db.delete(TB_SEARCHBOOKS, whereClause, whereArgs);
+		db.close();
+		return rows;
+	}
+
+	public int deleteLike(String reader_number, String doc_number) {
+		SQLiteDatabase db = getWritableDatabase();
+		String whereClause = "reader_number = ? and doc_number = ?";
+		String[] whereArgs = { reader_number, doc_number };
+		int rows = db.delete(TB_LIKES, whereClause, whereArgs);
+		db.close();
+		return rows;
+	}
+
+	private int deleteSearchs(String search_str, Integer no) {
+		SQLiteDatabase db = getWritableDatabase();
+		String whereClause = "search_str = ? and no = ?";
+		String[] whereArgs = { search_str, no.toString() };
+		int rows = db.delete(TB_SEARCHS, whereClause, whereArgs);
+		db.close();
+		return rows;
+	}
+
+	// 插入
+	public String getSearch_str(SearchSetting searchSetting) {
+		return searchSetting.toString();
+	}
+
+	public void insertOneSearch(SearchSetting searchSetting,
+			String search_keyword, ArrayList<LikeBook> searchBooks) {
+		String search_str = getSearch_str(searchSetting);
+		for (SearchBook searchBook : searchBooks) {
+			insertOneSearchBook(search_str, search_keyword, searchBook);
+		}
+	}
+
+	public void insertOneSearchBook(String search_str, String search_keyword,
+			SearchBook searchBook) {
+		Log.e(TAG, search_str);
+		deleteSearchBook(searchBook.getDoc_number());
+		insertSearchBook(searchBook);
+		deleteSearchs(search_str, searchBook.getNo());
+		insertSearchs(search_str, search_keyword, searchBook);
+	}
+
+	public long insertSearchs(String search_str, String search_keyword,
+			SearchBook searchBook) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("search_str", search_str);
+		values.put("no", searchBook.getNo());
+		values.put("doc_number", searchBook.getDoc_number());
+		values.put("search_keyword", search_keyword);
+		long id = db.insert(TB_SEARCHS, null, values);
+		db.close();
+		return id;
+	}
+
+	public long insertLike(String reader_number, LikeBook likeBook) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("reader_number", reader_number);
+		values.put("doc_number", likeBook.getDoc_number());
+		values.put("note", likeBook.getNote());
+		values.put("like_time", new Date().getTime());
+
+		long id = db.insert(TB_LIKES, null, values);
+		db.close();
+		return id;
+	}
+
+	public long insertSearchBook(SearchBook searchBook) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("doc_number", searchBook.getDoc_number());
+		values.put("author", searchBook.getAuthor());
+		values.put("name", searchBook.getName());
+		values.put("publisher", searchBook.getPublisher());
+		values.put("year", searchBook.getYear());
+		values.put("img_url", searchBook.getImg_url());
+		values.put("book_num", searchBook.getBook_num());
+		long id = db.insert(TB_SEARCHBOOKS, null, values);
+		db.close();
+		return id;
+	}
+
+	public long insertOrderInfos(String doc_number,
+			ArrayList<OrderInfo> orderInfos) {
+		deleteOrderInfos(doc_number);
+		for (OrderInfo orderInfo : orderInfos) {
+			insertOrderInfo(doc_number, orderInfo);
+		}
+		return 0;
+	}
+
+	public long insertOrderInfo(String doc_number, OrderInfo info) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("doc_number", doc_number);
+		values.put("description", info.getDescription());
+		values.put("state", info.getState());
+		values.put("due_date", info.getDue_date());
+		values.put("due_time", info.getDue_time());
+		values.put("sub_library", info.getSub_library());
+		values.put("place", info.getPlace());
+		values.put("book_num", info.getBook_num());
+		values.put("order_num", info.getOrder_num());
+		values.put("bar_code", info.getBar_code());
+		values.put("can_order", info.getCan_order());
+
+		long id = db.insert(TB_ORDERINFOS, null, values);
+		db.close();
+		return id;
+	}
+
+	public long insertBook(Book book) {
+		deleteBook(book.getDoc_number());
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("doc_number", book.getDoc_number());
+		values.put("isbn", book.getIsbn());
+		values.put("language", book.getLanguage());
+		values.put("name", book.getName());
+		values.put("publisher", book.getPublisher());
+		values.put("structure", book.getStructure());
+		values.put("summary", book.getSummary());
+		values.put("subject", book.getSubject());
+		values.put("author", book.getAuthor());
+		values.put("img_url", book.getImg_url());
+		values.put("year", book.getYear());
+		long id = db.insert(TB_BOOKS, null, values);
+
+		if (!book.getOrderInfos().isEmpty()) {
+			insertOrderInfos(book.getDoc_number(), book.getOrderInfos());
+		}
+		db.close();
+		return id;
+	}
+
+	public long insertUser(User user) {
+		deleteUser(user.getUsername());
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("reader_number", user.getUsername());
+		values.put("name", user.getName());
+		values.put("address", user.getAddress());
+		values.put("email", user.getEmail());
+		values.put("addr_start", user.getAddr_start());
+		values.put("addr_end", user.getAddr_end());
+		values.put("postalcode", user.getPostalcode());
+		values.put("phone1", user.getPhone1());
+		values.put("phone2", user.getPhone2());
+		values.put("phone3", user.getPhone3());
+		values.put("phone4", user.getPhone4());
+		values.put("state", user.getState());
+		values.put("type", user.getType());
+		values.put("number", user.getNumber());
+		values.put("valid_date", user.getValid_date());
+		values.put("borrow_num", user.getBorrow_num());
+		values.put("borrow_history", user.getBorrow_history());
+		values.put("order_num", user.getOrder_num());
+		values.put("cash", user.getCash());
+		values.put("debt", user.getDebt());
+
+		long id = db.insert(TB_USERS, null, values);
+		db.close();
+		return id;
+	}
+
+}

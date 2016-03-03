@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>  
+    <declare-styleable name="swingindicator">
+        <attr name="circleRadius" format="dimension" />
+        <attr name="swingRadius" format="dimension" />
+        <attr name="circleColor" format="reference|color" />
+        <attr name="cycle" format="integer" />
+    </declare-styleable>
+</resources>
+<!--http://www.see-source.com/androidwidget/detail.html?wid=21  -->

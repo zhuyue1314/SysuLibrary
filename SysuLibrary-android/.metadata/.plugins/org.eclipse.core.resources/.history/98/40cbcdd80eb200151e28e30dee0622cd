@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/user_bg" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/TxtTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/setting_item_selector"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="姓名，欢迎您的使用！"
+                android:textColor="#263238"
+                android:textSize="22sp"
+                android:textStyle="italic" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@color/black2" />
+
+            <TextView
+                android:id="@+id/tv_like"
+                style="@style/TxtTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/setting_item_selector"
+                android:clickable="true"
+                android:drawableRight="@drawable/right"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="我的收藏"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@color/black2" />
+
+            <TextView
+                android:id="@+id/tv_borrow"
+                style="@style/TxtTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/setting_item_selector"
+                android:clickable="true"
+                android:drawableRight="@drawable/right"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="外借"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@color/black2" />
+
+            <TextView
+                android:id="@+id/tv_order"
+                style="@style/TxtTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/setting_item_selector"
+                android:clickable="true"
+                android:drawableRight="@drawable/right"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="预约请求"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@color/black2" />
+
+            <TextView
+                android:id="@+id/tv_borrow_history"
+                style="@style/TxtTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/setting_item_selector"
+                android:clickable="true"
+                android:drawableRight="@drawable/right"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="借阅历史"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@color/black2" />
+
+            <TextView
+                android:id="@+id/tv_do"
+                style="@style/TxtTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/setting_item_selector"
+                android:clickable="true"
+                android:drawableRight="@drawable/right"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="目测你要做题目，点击我吧..."
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_about"
+                style="@style/TxtTitle"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/setting_item_selector"
+                android:clickable="true"
+                android:drawableRight="@drawable/right"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"
+                android:text="关于我们"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@color/black2" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="vertical"
+                android:gravity="center" >
+
+                <com.rxy.edittextmodel_master.ClearableEditText
+                    android:id="@+id/et_bug"
+                    android:layout_width="fill_parent"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:padding="3dp"
+                    android:background="@drawable/setting_item_selector"
+                    android:gravity="left|top"
+                    android:hint="什么是bug?\n没有bug的产品不是好产品..." >
+                </com.rxy.edittextmodel_master.ClearableEditText>
+
+                <Button
+                    android:id="@+id/bt_submit_bug"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45.0dip"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/btn_bg_blue"
+                    android:padding="10.0dip"
+                    android:text="提交bug"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:background="@color/black2" />
+            
+            
+            
+            
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="80.0dip"
+                android:gravity="center"
+                android:padding="20.0dip" >
+
+                <Button
+                    android:id="@+id/bt_logout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="45.0dip"
+                    android:background="@drawable/btn_bg_red2"
+                    android:padding="10.0dip"
+                    android:text="退出登录"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+        
+    </ScrollView>
+
+</LinearLayout>

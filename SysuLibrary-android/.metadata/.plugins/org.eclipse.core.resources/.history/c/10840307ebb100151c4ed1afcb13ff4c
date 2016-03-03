@@ -1,0 +1,346 @@
+package com.project.sysumobilelibrary;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.android.volley.VolleyError;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.toolbox.NetworkImageView;
+import com.newgame.sdk.AndroidShare;
+import com.project.sysumobilelibrary.adapter.MyBookOrderInfoListViewAdapter;
+import com.project.sysumobilelibrary.entity.Book;
+import com.project.sysumobilelibrary.entity.LikeBook;
+import com.project.sysumobilelibrary.entity.OrderInfo;
+import com.project.sysumobilelibrary.global.MyApplication;
+import com.project.sysumobilelibrary.global.MyURL;
+import com.project.sysumobilelibrary.utils.MyDBHelper;
+import com.project.sysumobilelibrary.utils.PictureUtil;
+import com.project.sysumobilelibrary.utils.ScreenShot;
+import com.project.sysumobilelibrary.view.MyScrollListView;
+
+import dmax.dialog.SpotsDialog;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class BookDetailActivity extends Activity {
+	private static final String TAG = "BookDetailActivity";
+
+	private TextView tvName;
+	private TextView tvAuthor;
+	private TextView tvDocNumber;
+	private TextView tvISBN;
+	private TextView tvLanguage;
+	private TextView tvPublisher;
+	private TextView tvStructure;
+	private TextView tvSubject;
+	private TextView tvSummary;
+	private Button btLoadOrderInfo;
+	private ScrollView scrollView;
+
+	private NetworkImageView nivBookPic;
+	private MyScrollListView myListView;
+	private AlertDialog loading;
+
+	private ImageView ivBack;
+	private TextView tvTitle;
+	private ImageButton ibShare;
+
+	private Book book = new Book();
+
+	private MyBookOrderInfoListViewAdapter adapter;
+
+	private final static int CODE_TOAST_MSG = 0;
+
+	Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case CODE_TOAST_MSG:
+				Toast.makeText(BookDetailActivity.this, msg.obj.toString(),
+						Toast.LENGTH_SHORT).show();
+				break;
+			}
+		};
+	};
+
+	public void myToast(String msg) {
+		handler.obtainMessage(CODE_TOAST_MSG, msg).sendToTarget();
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);// 去掉标题栏
+		setContentView(R.layout.activity_book_detail);
+
+		initView();
+		setEmpty();
+	}
+
+	private void initListView() {
+		adapter = new MyBookOrderInfoListViewAdapter(BookDetailActivity.this,
+				book.getOrderInfos(), book.getDoc_number());
+		myListView.setAdapter(adapter);
+	}
+
+	private void setEmpty() {
+		tvName.setText("");
+		tvAuthor.setText("");
+		tvDocNumber.setText("");
+		tvISBN.setText("");
+		tvLanguage.setText("");
+		tvPublisher.setText("");
+		tvStructure.setText("");
+		tvSubject.setText("");
+		tvSummary.setText("");
+
+	}
+
+	private void initView() {
+		loading = new SpotsDialog(this);
+		tvName = (TextView) findViewById(R.id.tv_name);
+		tvAuthor = (TextView) findViewById(R.id.tv_author);
+		tvDocNumber = (TextView) findViewById(R.id.tv_doc_number);
+		tvISBN = (TextView) findViewById(R.id.tv_isbn);
+		tvLanguage = (TextView) findViewById(R.id.tv_language);
+		tvPublisher = (TextView) findViewById(R.id.tv_publisher);
+		tvStructure = (TextView) findViewById(R.id.tv_structure);
+		tvSubject = (TextView) findViewById(R.id.tv_subject);
+		tvSummary = (TextView) findViewById(R.id.tv_summary);
+		btLoadOrderInfo = (Button) findViewById(R.id.bt_loadOrderInfo);
+		nivBookPic = (NetworkImageView) findViewById(R.id.niv_book_pic);
+		myListView = (MyScrollListView) findViewById(R.id.listview);
+		myListView.setVisibility(View.GONE);
+		ivBack = (ImageView) findViewById(R.id.iv_back);
+		tvTitle = (TextView) findViewById(R.id.tv_title);
+		ibShare = (ImageButton) findViewById(R.id.ib_share);
+		scrollView = (ScrollView) findViewById(R.id.scrollview);
+		tvTitle.setText("详细信息");
+		setViewData();
+		ivBack.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				finish();
+			}
+		});
+		ibShare.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+//				AlertDialog dialog = new SpotsDialog(BookDetailActivity.this);
+//				dialog.setTitle("正在截图...");
+//				dialog.show();
+				myToast("正在截图...");
+				String path = "";
+				if (hasSdcard()) {
+					File tempFile = new File(Environment
+							.getExternalStorageDirectory(), "screen.png");
+					path = tempFile.getAbsolutePath();
+
+				} else {
+					Toast.makeText(getApplication(), "没有SDCard!",
+							Toast.LENGTH_SHORT).show();
+				}
+				Bitmap bitmap = ScreenShot.getBitmapByView(scrollView);
+//				dialog.dismiss();
+				
+				ScreenShot.savePic(bitmap, path);
+				bitmap = PictureUtil.getSmallBitmap(path);
+				ScreenShot.savePic(bitmap, path);
+				AndroidShare as = new AndroidShare(BookDetailActivity.this,
+						book.getSummary(), path);
+				as.show();
+			}
+		});
+		btLoadOrderInfo.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				loadOrderInfo();
+
+				btLoadOrderInfo.setText("加载中...");
+
+			}
+		});
+
+	}
+
+	/**
+	 * 检查设备是否存在SDCard的工具方法
+	 */
+	public static boolean hasSdcard() {
+		String state = Environment.getExternalStorageState();
+		if (state.equals(Environment.MEDIA_MOUNTED)) {
+			// 有存储的SDCard
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	protected void loadOrderInfo() {
+		Listener<String> listener = new Listener<String>() {
+			@Override
+			public void onResponse(String response) {
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					Log.e(TAG, jsonObject.getString("msg"));
+					int code = jsonObject.getInt("code");
+					if (code == 1) {
+						updateOrderInfosFromJSONObject(jsonObject);
+						btLoadOrderInfo.setVisibility(View.GONE);
+						Log.e(TAG, "获取图书馆藏信息成功");
+						myListView.setVisibility(View.VISIBLE);
+					} else {
+						Log.e(TAG, "获取图书馆藏信息失败");
+						myToast("加载失败");
+						btLoadOrderInfo.setText("再试一次");
+					}
+				} catch (JSONException e) {
+					Log.e(TAG, response);
+					e.printStackTrace();
+					Log.e(TAG, "get book order info json new error");
+					myToast("加载失败");
+					btLoadOrderInfo.setText("再试一次");
+				}
+			}
+		};
+		ErrorListener errorListener = new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				Log.e(TAG, "get book order info error; " + error.toString());
+				myToast("是不是网络出问题了呢？");
+				btLoadOrderInfo.setText("再试一次");
+			}
+		};
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("token", MyApplication.getUser().getToken());
+		map.put("doc_number", book.getDoc_number());
+		MyApplication.getMyVolley().addPostStringRequest(
+				MyURL.GET_BOOK_ORDER_INFO, listener, errorListener, map, TAG);
+	}
+
+	protected void updateOrderInfosFromJSONObject(JSONObject jsonObject)
+			throws JSONException {
+		JSONArray jsonArray = jsonObject.getJSONArray("order_info");
+		for (int i = 0; i < jsonArray.length(); ++i) {
+			OrderInfo orderInfo = new OrderInfo();
+			orderInfo.getFromJSONObject(jsonArray.getJSONObject(i));
+			book.getOrderInfos().add(orderInfo);
+		}
+		if (adapter != null) {
+			adapter.notifyDataSetChanged();
+		}
+	}
+
+	private void setViewData() {
+		tvName.setText(book.getName());
+		tvAuthor.setText(book.getAuthor());
+		tvDocNumber.setText(book.getDoc_number());
+		tvISBN.setText(book.getIsbn());
+		tvLanguage.setText(book.getLanguage());
+		tvPublisher.setText(book.getPublisher());
+		tvStructure.setText(book.getStructure());
+		tvSubject.setText(book.getSubject());
+		tvSummary.setText(book.getSummary());
+
+		nivBookPic.setDefaultImageResId(R.drawable.book_bg);
+		nivBookPic.setErrorImageResId(R.drawable.book_bg);
+		nivBookPic.setImageUrl(book.getImg_url(), MyApplication.getMyVolley()
+				.getImageLoader());
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		String doc_number = getIntent().getExtras().getString("doc_number");
+		MyDBHelper myDBHelper = new MyDBHelper(BookDetailActivity.this);
+		book = myDBHelper.queryBook(doc_number);
+		if (book == null) {
+			book = new Book();
+			loadingBookDetail(doc_number);
+		} else {
+			setViewData();
+			initListView();
+		}
+	}
+
+	private void loadingBookDetail(String doc_number) {
+		loading.show();
+		Listener<String> listener = new Listener<String>() {
+			@Override
+			public void onResponse(String response) {
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					Log.e(TAG, jsonObject.getString("msg"));
+					int code = jsonObject.getInt("code");
+					if (code == 1) {
+						book.updateFromJSONObject(jsonObject);
+						Log.e(TAG, "获取图书信息成功");
+						setViewData();
+						initListView();
+						new Thread(new InsertBookToDB(book)).start();
+					} else if (code == 2) {
+						Log.e(TAG, "请求的记录在当前库中不存在。");
+						myToast("请求的记录在当前库中不存在。");
+					} else {
+						Log.e(TAG, "获取图书信息失败");
+						myToast("获取图书信息失败");
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					Log.e(TAG, "get book info json new error");
+					myToast("是不是网络出问题了呢？");
+				}
+				loading.dismiss();
+			}
+		};
+		ErrorListener errorListener = new ErrorListener() {
+
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				Log.e(TAG, "get book order info error; " + error.toString());
+				myToast("是不是网络出问题了呢？");
+				loading.dismiss();
+			}
+		};
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("token", MyApplication.getUser().getToken());
+		map.put("doc_number", doc_number);
+		MyApplication.getMyVolley().addPostStringRequest(MyURL.GET_BOOK_INFO,
+				listener, errorListener, map, TAG);
+	}
+
+	class InsertBookToDB implements Runnable {
+		private Book book;
+
+		public InsertBookToDB(Book book) {
+			this.book = book;
+		}
+
+		@Override
+		public void run() {
+			MyDBHelper myDBHelper = new MyDBHelper(BookDetailActivity.this);
+			myDBHelper.insertBook(book);
+		}
+	}
+}

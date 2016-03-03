@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48.0dip"
+                android:background="@color/bar_color" >
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="40dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/icon_back"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    style="@style/txt_titleStyle1"
+                    android:layout_centerInParent="true"
+                    android:text="title" />
+
+                <ImageButton
+                    android:id="@+id/ib_share"
+                    style="@style/txt_titleStyle1"
+                    android:layout_width="60dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_share" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/detail_bg" >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/book_bg" />
+
+                <com.android.volley.toolbox.NetworkImageView
+                    android:id="@+id/niv_book_pic"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/book_bg" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="题名"
+                    android:textColor="#9e9e9e"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="|" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:singleLine="true"
+                    android:text="计算机网络 : 自顶向下方法与Internet特色 = Computer networking : a top-down approach featuring the Internet / (美) James F.Kurose, Keith W.Ross著 ; 陈鸣等译"
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="第一作者"
+                    android:textColor="#9e9e9e"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="|" />
+
+                <TextView
+                    android:id="@+id/tv_author"
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:singleLine="true"
+                    android:text="库罗斯, J. F."
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="主题"
+                    android:textColor="#9e9e9e"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="|" />
+
+                <TextView
+                    android:id="@+id/tv_subject"
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:singleLine="true"
+                    android:text="计算机网络"
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="作品语种"
+                    android:textColor="#9e9e9e"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="|" />
+
+                <TextView
+                    android:id="@+id/tv_language"
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:singleLine="true"
+                    android:text="chi"
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="载体形态"
+                    android:textColor="#9e9e9e"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="|" />
+
+                <TextView
+                    android:id="@+id/tv_structure"
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:singleLine="true"
+                    android:text="xix, 563页 : 图 ; 26cm"
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="出版发行"
+                    android:textColor="#9e9e9e"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="|" />
+
+                <TextView
+                    android:id="@+id/tv_publisher"
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:singleLine="true"
+                    android:text="北京 : 机械工业出版社, 2005"
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="系统号"
+                    android:textColor="#9e9e9e"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="|" />
+
+                <TextView
+                    android:id="@+id/tv_doc_number"
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:singleLine="true"
+                    android:text="000540122"
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="ISBN"
+                    android:textColor="#9e9e9e"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="|" />
+
+                <TextView
+                    android:id="@+id/tv_isbn"
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="3"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:singleLine="true"
+                    android:text="7-111-16505-5 : CNY55.00"
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="摘要"
+                    android:textColor="#9e9e9e"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="|" />
+
+                <TextView
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/setting_item_selector"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/tv_summary"
+                    style="@style/TxtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="著者个人著者个人著者著者个人著者个人著者著者个人著者个人著者著者个人著者个人著者著者个人著者个人著者著者个人著者个人著者著者个人著者个人著者著者个人著者个人著者著者个人著者个人著者"
+                    android:textColor="#263238"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/bt_loadOrderInfo"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/imageview_btn_item_selector"
+                    android:padding="10.0dip"
+                    android:text="查看馆藏"
+                    android:textColor="#455a64" />
+            </LinearLayout>
+
+            <com.project.sysumobilelibrary.view.MyScrollListView
+                android:id="@+id/listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:dividerHeight="2dp" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

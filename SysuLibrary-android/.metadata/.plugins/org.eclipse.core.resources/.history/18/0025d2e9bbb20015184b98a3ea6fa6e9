@@ -1,0 +1,283 @@
+package com.project.sysumobilelibrary;
+
+import java.util.HashMap;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import me.drakeet.materialdialog.MaterialDialog;
+
+import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
+import com.jauker.widget.BadgeView;
+import com.project.sysumobilelibrary.entity.User;
+import com.project.sysumobilelibrary.global.MyApplication;
+import com.project.sysumobilelibrary.global.MyURL;
+import com.rxy.edittextmodel_master.ClearableEditText;
+
+import android.app.Fragment;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class UserFragment extends Fragment implements OnClickListener {
+	private static final String TAG = "LikeFragment";
+	
+	private View view;
+	private TextView tvName;
+	private TextView tvLike;
+	private TextView tvBorrow;
+	private TextView tvOrder;
+	private TextView tvBorHistory;
+	private TextView tvAbout;
+	private TextView tvDo;
+	private Button btLogout;
+
+	private ClearableEditText etBug;
+	private Button btSubmit;
+	
+	private static BadgeView meetBadgeView;
+	private static BadgeView missBadgeView;
+	private final static int CODE_TOAST_MSG = 0;
+	Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case CODE_TOAST_MSG:
+				Toast.makeText(getActivity(), msg.obj.toString(),
+						Toast.LENGTH_SHORT).show();
+				break;
+			}
+		};
+	};
+
+	public void myToast(String msg) {
+		handler.obtainMessage(CODE_TOAST_MSG, msg).sendToTarget();
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		view = inflater.inflate(R.layout.fragment_user, container, false);
+		// initView();
+		meetBadgeView = new BadgeView(getActivity());
+		missBadgeView = new BadgeView(getActivity());
+		return view;
+	}
+
+	@Override
+	public void onResume() {
+		initView();
+		initHint();
+		super.onResume();
+	}
+
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		// TODO Auto-generated method stub
+		if (!hidden) {
+			initView();
+			initHint();
+		}
+	}
+
+	private void initHint() {
+		// MyApplication.getUser().setCash("1.00");
+		if (MyApplication.getUser().getCash().trim().equals("0.00")) {
+			tvDo.setVisibility(View.GONE);
+		} else {
+			tvDo.setVisibility(View.VISIBLE);
+		}
+
+		if (MainActivity.meetOrderNum > 0) {
+			meetBadgeView.setVisibility(View.VISIBLE);
+			meetBadgeView.setTargetView(tvOrder);
+			meetBadgeView.setTypeface(Typeface.create(Typeface.SANS_SERIF,
+					Typeface.ITALIC));
+			meetBadgeView.setShadowLayer(2, -1, -1, Color.GREEN);
+			meetBadgeView.setBadgeGravity(Gravity.CENTER);
+			meetBadgeView.setBackgroundColor(Color.GREEN);
+			meetBadgeView.setBadgeCount(MainActivity.meetOrderNum);
+		} else {
+			meetBadgeView.setVisibility(View.GONE);
+		}
+
+		if (MainActivity.missBorrowNum > 0) {
+			missBadgeView.setVisibility(View.VISIBLE);
+			missBadgeView.setTargetView(tvBorrow);
+			missBadgeView.setTypeface(Typeface.create(Typeface.SANS_SERIF,
+					Typeface.ITALIC));
+			missBadgeView.setShadowLayer(2, -1, -1, Color.RED);
+			missBadgeView.setBadgeGravity(Gravity.CENTER);
+			missBadgeView.setBackgroundColor(Color.RED);
+			missBadgeView.setBadgeCount(MainActivity.missBorrowNum);
+		} else {
+			missBadgeView.setVisibility(View.GONE);
+		}
+	}
+
+	private void initView() {
+		tvName = (TextView) view.findViewById(R.id.tv_name);
+		tvName.setOnClickListener(this);
+		String name = MyApplication.getUser().getName();
+		if (name == null || name.trim().isEmpty()) {
+			name = "学霸";
+		}
+		tvName.setText(name + "，欢迎您的使用！");
+		tvLike = (TextView) view.findViewById(R.id.tv_like);
+		tvLike.setOnClickListener(this);
+		tvBorrow = (TextView) view.findViewById(R.id.tv_borrow);
+		tvBorrow.setOnClickListener(this);
+		tvBorrow.setText("外借　" + MyApplication.getUser().getBorrow_num());
+		tvBorHistory = (TextView) view.findViewById(R.id.tv_borrow_history);
+		tvBorHistory.setOnClickListener(this);
+		tvBorHistory.setText("借阅历史　"
+				+ MyApplication.getUser().getBorrow_history());
+		tvOrder = (TextView) view.findViewById(R.id.tv_order);
+		tvOrder.setOnClickListener(this);
+		tvOrder.setText("预约请求　" + MyApplication.getUser().getOrder_num());
+		tvAbout = (TextView) view.findViewById(R.id.tv_about);
+		tvAbout.setOnClickListener(this);
+		tvDo = (TextView) view.findViewById(R.id.tv_do);
+		tvDo.setOnClickListener(this);
+		btLogout = (Button) view.findViewById(R.id.bt_logout);
+		btLogout.setOnClickListener(this);
+		
+		etBug = (ClearableEditText) view.findViewById(R.id.et_bug);
+		btSubmit = (Button) view.findViewById(R.id.bt_submit_bug);
+		btSubmit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				String bug = etBug.getText().toString().trim();
+				if (bug.isEmpty()){
+					Toast.makeText(getActivity(), "空，也是一个bug！", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				submitBug(bug);
+			}
+		});
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch (view.getId()) {
+		case R.id.tv_name:
+			showUser();
+			break;
+		case R.id.tv_like:
+			RadioButton rButton = (RadioButton) getActivity().findViewById(
+					R.id.rb_like);
+			rButton.setChecked(true);
+			break;
+		case R.id.tv_borrow:
+			startActivity(new Intent(getActivity(), BorrowActivity.class));
+			break;
+		case R.id.tv_order:
+			startActivity(new Intent(getActivity(), OrderActivity.class));
+			break;
+		case R.id.tv_borrow_history:
+			startActivity(new Intent(getActivity(), BorHistoryActivity.class));
+			break;
+		case R.id.tv_about:
+			final MaterialDialog materialDialog = new MaterialDialog(
+					getActivity());
+			materialDialog
+					.setTitle("About us")
+					.setMessage("")
+					.setPositiveButton(android.R.string.yes,
+							new View.OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									materialDialog.dismiss();
+								}
+							});
+			materialDialog.show();
+			break;
+		case R.id.bt_logout:
+			getActivity().finish();
+			break;
+		case R.id.tv_do:
+			String url = "http://202.116.65.85/sysulib/";
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(Uri.parse(url));
+			startActivity(intent);
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	private void showUser() {
+		final MaterialDialog materialDialog = new MaterialDialog(getActivity());
+		User user = MyApplication.getUser();
+		String msg = "";
+		msg += "姓名：" + user.getName() + "\n";
+		msg += "地址：" + user.getAddress() + "\n";
+		msg += "电话：" + user.getPhone1() + "\n";
+		msg += "外借：" + user.getBorrow_num() + "\n";
+		msg += "预约：" + user.getOrder_num() + "\n";
+		msg += "历史借阅：" + user.getBorrow_history() + "\n";
+		materialDialog.setMessage(msg).setPositiveButton(android.R.string.yes,
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						materialDialog.dismiss();
+					}
+				});
+		materialDialog.show();
+
+	}
+
+	protected void submitBug(String bug) {
+		Listener<String> listener = new Response.Listener<String>() {
+			@Override
+			public void onResponse(String response) {
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					Log.e(TAG, jsonObject.getString("msg"));
+					if (jsonObject.getInt("code") == 1) {
+						Log.e(TAG, "my submit succeed");
+						myToast(jsonObject.getString("msg"));
+
+					} else {
+						Log.e(TAG, "my submit ：" + response);
+						myToast("这肯定是个bug!");
+					}
+				} catch (JSONException e) {
+					Log.e(TAG, "my submit json bug：" + response);
+					e.printStackTrace();
+					myToast("这肯定是个bug!");
+				}
+			}
+		};
+		ErrorListener errorListener = new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				myToast("貌似没网络连接了，难道这也是个bug？");
+			}
+		};
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("bug", bug);
+		map.put("username", MyApplication.getUser().getUsername());
+		MyApplication.getMyVolley().addPostStringRequest(MyURL.SUBMIT_BUG,
+				listener, errorListener, map, TAG);
+
+	}
+}
